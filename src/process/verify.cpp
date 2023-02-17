@@ -11,7 +11,7 @@
 
 #include "util/field.h"
 
-namespace kzg::process {
+namespace kzg::process::verify {
 
 bool verify_single_polynomial(const structure::OpeningKey &opening_key, const structure::Commitment &commitment,
                               const structure::Proof &proof) {
@@ -92,4 +92,4 @@ verify_aggregation(const std::vector<structure::Commitment> &commitments,
     return {structure::Commitment{flattened_poly_commitments}, flattened_poly_evaluations};
 }
 
-} // namespace kzg::process
+} // namespace kzg::process::verify

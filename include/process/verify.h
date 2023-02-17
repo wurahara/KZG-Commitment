@@ -11,7 +11,7 @@
 #include "structure/opening_key.h"
 #include "structure/proofs.h"
 
-namespace kzg::process {
+namespace kzg::process::verify {
 
 bool verify_single_polynomial(
         const structure::OpeningKey &opening_key,
@@ -39,6 +39,6 @@ std::tuple<structure::Commitment, bls12_381::scalar::Scalar> verify_aggregation(
         challenge::TranscriptProtocol &transcript
 );
 
-} // namespace kzg::process
+} // namespace kzg::process::verify
 
 #endif //KZG_COMMITMENT_VERIFY_H

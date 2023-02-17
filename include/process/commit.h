@@ -5,10 +5,10 @@
 #include "structure/commit_key.h"
 #include "structure/commitment.h"
 
-namespace kzg::process {
+namespace kzg::process::commit {
 
 structure::Commitment commit(const structure::CommitKey &commit_key, const polynomial::CoefficientForm &polynomial);
 
-} // namespace kzg::process
+} // namespace kzg::process::commit
 
 #endif //KZG_COMMITMENT_COMMIT_H

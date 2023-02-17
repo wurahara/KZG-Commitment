@@ -11,7 +11,7 @@
 #include "structure/commitment.h"
 #include "structure/proofs.h"
 
-namespace kzg::process {
+namespace kzg::process::evaluate {
 
 structure::Proof create_witness_single(
         const structure::CommitKey &commit_key,

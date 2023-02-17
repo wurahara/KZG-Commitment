@@ -6,7 +6,7 @@
 #include "process/commit.h"
 #include "util/field.h"
 
-namespace kzg::process {
+namespace kzg::process::evaluate {
 
 structure::Proof create_witness_single(
         const structure::CommitKey &commit_key,
@@ -15,7 +15,7 @@ structure::Proof create_witness_single(
     const auto evaluation = polynomial.evaluate(point);
     const auto diff = polynomial - evaluation;
     const auto quotient = diff.ruffini(point);
-    auto witness = process::commit(commit_key, quotient);
+    auto witness = process::commit::commit(commit_key, quotient);
     return structure::Proof{point, evaluation, witness};
 }
 
@@ -39,10 +39,10 @@ structure::AggregatedProof create_witness_multiple_polynomials(
         psi_poly_numerator += polynomials[i] * gamma_powers[i];
 
     const auto quotient = psi_poly_numerator.ruffini(point);
-    const auto witness = process::commit(commit_key, quotient);
+    const auto witness = process::commit::commit(commit_key, quotient);
 
     return structure::AggregatedProof{point, evaluations, witness};
 }
 
 
-} // namespace kzg::process
+} // namespace kzg::process::evaluate

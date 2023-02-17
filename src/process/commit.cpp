@@ -2,7 +2,7 @@
 
 #include "group/g1_projective.h"
 
-namespace kzg::process {
+namespace kzg::process::commit {
 
 structure::Commitment commit(const structure::CommitKey &commit_key, const polynomial::CoefficientForm &polynomial) {
     commit_key.check_polynomial_degree(polynomial);
@@ -17,4 +17,4 @@ structure::Commitment commit(const structure::CommitKey &commit_key, const polyn
     return structure::Commitment{res};
 }
 
-} // namespace kzg::process
+} // namespace kzg::process::commit
