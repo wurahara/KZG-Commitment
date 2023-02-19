@@ -6,17 +6,20 @@
 
 namespace kzg::util::field {
 
-bls12_381::scalar::Scalar generate_random_scalar() {
-    std::array<uint8_t, bls12_381::scalar::Scalar::BYTE_SIZE * 2> bytes{};
+using bls12_381::scalar::Scalar;
+using random::get_random;
+
+Scalar generate_random_scalar() {
+    std::array<uint8_t, Scalar::BYTE_SIZE * 2> bytes{};
     for (uint8_t &byte: bytes)
-        byte = random::get_random<uint8_t>();
-    return bls12_381::scalar::Scalar::from_bytes_wide(bytes);
+        byte = get_random<uint8_t>();
+    return Scalar::from_bytes_wide(bytes);
 }
 
-std::vector<bls12_381::scalar::Scalar> generate_vec_powers(const bls12_381::scalar::Scalar &value, size_t max_degree) {
-    std::vector<bls12_381::scalar::Scalar> monomials;
+std::vector<Scalar> generate_vec_powers(const Scalar &value, size_t max_degree) {
+    std::vector<Scalar> monomials;
     monomials.reserve(max_degree + 1);
-    monomials.push_back(bls12_381::scalar::Scalar::one());
+    monomials.push_back(Scalar::one());
 
     for (int i = 1; i <= max_degree; ++i)
         monomials.push_back(monomials[i - 1] * value);
@@ -24,13 +27,13 @@ std::vector<bls12_381::scalar::Scalar> generate_vec_powers(const bls12_381::scal
     return monomials;
 }
 
-void batch_inversion(std::vector<bls12_381::scalar::Scalar> &scalars) {
-    std::vector<bls12_381::scalar::Scalar> prod;
+void batch_inversion(std::vector<Scalar> &scalars) {
+    std::vector<Scalar> prod;
     prod.reserve(scalars.size());
-    bls12_381::scalar::Scalar temp = bls12_381::scalar::Scalar::one();
+    Scalar temp = Scalar::one();
 
     for (const auto &scalar: scalars) {
-        if (scalar != bls12_381::scalar::Scalar::zero()) {
+        if (scalar != Scalar::zero()) {
             temp *= scalar;
             prod.push_back(temp);
         }
@@ -40,16 +43,14 @@ void batch_inversion(std::vector<bls12_381::scalar::Scalar> &scalars) {
 
     int32_t sentinel = static_cast<int32_t>(prod.size()) - 2;
     for (auto iter = scalars.rbegin(); iter != scalars.rend(); iter++) { // NOLINT(modernize-loop-convert)
-        if (*iter == bls12_381::scalar::Scalar::zero()) continue;
+        if (*iter == Scalar::zero()) continue;
         if (sentinel < -1) break;
 
-        bls12_381::scalar::Scalar new_temp = temp * *iter;
-        *iter = temp * ((sentinel != -1) ? prod[sentinel] : bls12_381::scalar::Scalar::one());
+        Scalar new_temp = temp * *iter;
+        *iter = temp * ((sentinel != -1) ? prod[sentinel] : Scalar::one());
         temp = new_temp;
         sentinel--;
     }
-
 }
-
 
 } // namespace kzg::util::field

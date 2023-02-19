@@ -21,14 +21,16 @@ void TranscriptProtocol::append_scalar(const std::string_view &label, const bls1
 }
 
 bls12_381::scalar::Scalar TranscriptProtocol::challenge_scalar(const std::string_view &label) {
+    using bls12_381::scalar::Scalar;
+
     std::vector<uint8_t> buffer;
     buffer.resize(64);
     this->challenge_bytes(label, buffer);
 
-    std::array<uint8_t, bls12_381::scalar::Scalar::BYTE_SIZE * 2> bytes{};
-    std::copy(buffer.begin(), buffer.begin() + bls12_381::scalar::Scalar::BYTE_SIZE * 2, bytes.begin());
+    std::array<uint8_t, Scalar::BYTE_SIZE * 2> bytes{};
+    std::copy(buffer.begin(), buffer.begin() + Scalar::BYTE_SIZE * 2, bytes.begin());
 
-    return bls12_381::scalar::Scalar::from_bytes_wide(bytes);
+    return Scalar::from_bytes_wide(bytes);
 }
 
 } // namespace kzg::challenge

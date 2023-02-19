@@ -4,6 +4,8 @@
 
 namespace kzg::domain {
 
+using bls12_381::scalar::Scalar;
+
 constexpr uint32_t bit_reverse(uint32_t num, uint32_t length) {
     uint32_t res = 0;
     for (int i = 0; i < length; ++i) {
@@ -13,18 +15,16 @@ constexpr uint32_t bit_reverse(uint32_t num, uint32_t length) {
     return res;
 }
 
-void distribute_powers(const std::vector<bls12_381::scalar::Scalar> &coefficients,
-                       const bls12_381::scalar::Scalar &generator) {
-    bls12_381::scalar::Scalar power = bls12_381::scalar::Scalar::one();
+void distribute_powers(const std::vector<Scalar> &coefficients,
+                       const Scalar &generator) {
+    Scalar power = Scalar::one();
     for (auto coeff: coefficients) {
         coeff *= power;
         power *= generator;
     }
 }
 
-void serial_fast_fourier(std::vector<bls12_381::scalar::Scalar> &a,
-                         const bls12_381::scalar::Scalar &omega,
-                         uint32_t log_size) {
+void serial_fast_fourier(std::vector<Scalar> &a, const Scalar &omega, uint32_t log_size) {
     const auto n = static_cast<uint32_t>(a.size());
     assert(n == (1 << log_size));
 
@@ -34,13 +34,13 @@ void serial_fast_fourier(std::vector<bls12_381::scalar::Scalar> &a,
     }
     uint32_t m = 1;
     for (int i = 0; i < log_size; ++i) {
-        const bls12_381::scalar::Scalar omega_m = omega.pow({n / (2 * m), 0, 0, 0});
+        const Scalar omega_m = omega.pow({n / (2 * m), 0, 0, 0});
         uint32_t k = 0;
         while (k < n) {
-            bls12_381::scalar::Scalar omega_i = bls12_381::scalar::Scalar::one();
+            Scalar omega_i = Scalar::one();
             for (int j = 0; j < m; ++j) {
-                bls12_381::scalar::Scalar t = a[k + j + m];
-                bls12_381::scalar::Scalar temp = a[k + j];
+                Scalar t = a[k + j + m];
+                Scalar temp = a[k + j];
                 t *= omega_i;
                 temp -= t;
                 a[k + j + m] = temp;
@@ -53,5 +53,4 @@ void serial_fast_fourier(std::vector<bls12_381::scalar::Scalar> &a,
     }
 }
 
-
-}
+} // namespace kzg::domain

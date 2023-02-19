@@ -4,15 +4,17 @@
 
 namespace kzg::polynomial {
 
+using bls12_381::scalar::Scalar;
+using domain::EvaluationDomain;
+
 EvaluationForm::EvaluationForm(const EvaluationForm &poly) = default;
 
 EvaluationForm::EvaluationForm(EvaluationForm &&poly) noexcept = default;
 
-EvaluationForm::EvaluationForm(const std::vector<bls12_381::scalar::Scalar> &evaluations,
-                               const domain::EvaluationDomain &domain)
+EvaluationForm::EvaluationForm(const std::vector<Scalar> &evaluations, const EvaluationDomain &domain)
         : evaluations{evaluations}, domain{domain} {}
 
-EvaluationForm::EvaluationForm(std::vector<bls12_381::scalar::Scalar> &&evaluations, domain::EvaluationDomain &&domain)
+EvaluationForm::EvaluationForm(std::vector<Scalar> &&evaluations, EvaluationDomain &&domain)
         : evaluations{std::move(evaluations)}, domain{std::move(domain)} {}
 
 CoefficientForm EvaluationForm::interpolate() const {

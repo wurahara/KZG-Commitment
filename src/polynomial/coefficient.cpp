@@ -9,20 +9,22 @@
 
 namespace kzg::polynomial {
 
+using bls12_381::scalar::Scalar;
+using domain::EvaluationDomain;
+using util::field::generate_vec_powers;
+
 CoefficientForm::CoefficientForm() : coefficients{} {}
 
 CoefficientForm::CoefficientForm(const CoefficientForm &rhs) = default;
 
 CoefficientForm::CoefficientForm(CoefficientForm &&rhs) noexcept = default;
 
-CoefficientForm::CoefficientForm(const std::vector<bls12_381::scalar::Scalar> &coefficients)
-        : coefficients{coefficients} {
+CoefficientForm::CoefficientForm(const std::vector<Scalar> &coefficients) : coefficients{coefficients} {
     this->trim_leading_zeros();
     assert(this->coefficients.empty() || !this->coefficients.back().is_zero());
 }
 
-CoefficientForm::CoefficientForm(std::vector<bls12_381::scalar::Scalar> &&coefficients)
-        : coefficients{std::move(coefficients)} {
+CoefficientForm::CoefficientForm(std::vector<Scalar> &&coefficients) : coefficients{std::move(coefficients)} {
     this->trim_leading_zeros();
     assert(this->coefficients.empty() || !this->coefficients.back().is_zero());
 }
@@ -32,10 +34,10 @@ CoefficientForm CoefficientForm::zero() {
 }
 
 CoefficientForm CoefficientForm::random(size_t degree) {
-    std::vector<bls12_381::scalar::Scalar> rand_coeffs;
+    std::vector<Scalar> rand_coeffs;
     rand_coeffs.reserve(degree + 1);
     for (int i = 0; i <= degree; ++i) {
-        rand_coeffs.push_back(bls12_381::scalar::Scalar::random());
+        rand_coeffs.push_back(Scalar::random());
     }
     return CoefficientForm{rand_coeffs};
 }
@@ -47,7 +49,7 @@ void CoefficientForm::trim_leading_zeros() {
 
 bool CoefficientForm::is_zero() const {
     bool flag = true;
-    for (const bls12_381::scalar::Scalar &coeff: this->coefficients)
+    for (const Scalar &coeff: this->coefficients)
         if (!coeff.is_zero())
             flag = false;
     return this->coefficients.empty() || flag;
@@ -60,25 +62,25 @@ size_t CoefficientForm::degree() const {
     return this->coefficients.size() - 1;
 }
 
-bls12_381::scalar::Scalar CoefficientForm::evaluate(const bls12_381::scalar::Scalar &point) const {
+Scalar CoefficientForm::evaluate(const Scalar &point) const {
     if (this->is_zero())
-        return bls12_381::scalar::Scalar::zero();
-    auto monomials = util::field::generate_vec_powers(point, this->degree());
+        return Scalar::zero();
+    auto monomials = generate_vec_powers(point, this->degree());
     assert(monomials.size() == this->coefficients.size());
 
-    bls12_381::scalar::Scalar res = bls12_381::scalar::Scalar::zero();
+    Scalar res = Scalar::zero();
     for (int i = 0; i < this->coefficients.size(); ++i)
         res += (this->coefficients[i] * monomials[i]);
     return res;
 }
 
-CoefficientForm CoefficientForm::ruffini(const bls12_381::scalar::Scalar &point) const {
-    std::vector<bls12_381::scalar::Scalar> quotient;
+CoefficientForm CoefficientForm::ruffini(const Scalar &point) const {
+    std::vector<Scalar> quotient;
     quotient.reserve(this->degree());
-    bls12_381::scalar::Scalar k = bls12_381::scalar::Scalar::zero();
+    Scalar k = Scalar::zero();
     for (auto iter = this->coefficients.rbegin(); // NOLINT(modernize-loop-convert)
          iter != this->coefficients.rend(); iter++) {
-        bls12_381::scalar::Scalar t = *iter + k;
+        Scalar t = *iter + k;
         quotient.push_back(t);
         k = point * t;
     }
@@ -89,7 +91,7 @@ CoefficientForm CoefficientForm::ruffini(const bls12_381::scalar::Scalar &point)
     return CoefficientForm{quotient};
 }
 
-std::vector<bls12_381::scalar::Scalar> CoefficientForm::get_coefficients() const {
+std::vector<Scalar> CoefficientForm::get_coefficients() const {
     return this->coefficients;
 }
 
@@ -114,7 +116,7 @@ CoefficientForm &CoefficientForm::operator+=(const CoefficientForm &polynomial) 
         for (int i = 0; i < this->coefficients.size(); ++i)
             this->coefficients[i] += polynomial.coefficients[i];
     } else {
-        this->coefficients.resize(polynomial.coefficients.size(), bls12_381::scalar::Scalar::zero());
+        this->coefficients.resize(polynomial.coefficients.size(), Scalar::zero());
         for (int i = 0; i < this->coefficients.size(); ++i)
             this->coefficients[i] += polynomial.coefficients[i];
         this->trim_leading_zeros();
@@ -124,7 +126,7 @@ CoefficientForm &CoefficientForm::operator+=(const CoefficientForm &polynomial) 
 
 CoefficientForm &CoefficientForm::operator-=(const CoefficientForm &polynomial) {
     if (this->is_zero()) {
-        this->coefficients.resize(polynomial.coefficients.size(), bls12_381::scalar::Scalar::zero());
+        this->coefficients.resize(polynomial.coefficients.size(), Scalar::zero());
         for (int i = 0; i < polynomial.coefficients.size(); ++i)
             this->coefficients[i] -= polynomial.coefficients[i];
     } else if (polynomial.is_zero()) {
@@ -133,7 +135,7 @@ CoefficientForm &CoefficientForm::operator-=(const CoefficientForm &polynomial) 
         for (int i = 0; i < this->coefficients.size(); ++i)
             this->coefficients[i] -= polynomial.coefficients[i];
     } else {
-        this->coefficients.resize(polynomial.coefficients.size(), bls12_381::scalar::Scalar::zero());
+        this->coefficients.resize(polynomial.coefficients.size(), Scalar::zero());
         for (int i = 0; i < this->coefficients.size(); ++i)
             this->coefficients[i] -= polynomial.coefficients[i];
         this->trim_leading_zeros();
@@ -148,7 +150,7 @@ CoefficientForm &CoefficientForm::operator*=(const CoefficientForm &polynomial) 
     }
     auto poly_coefficients = polynomial.coefficients;
 
-    const domain::EvaluationDomain domain{this->coefficients.size() + polynomial.coefficients.size()};
+    const EvaluationDomain domain{this->coefficients.size() + polynomial.coefficients.size()};
     EvaluationForm self_evaluations{domain.fast_fourier(this->coefficients), domain};
     const EvaluationForm poly_evaluations{domain.fast_fourier(poly_coefficients), domain};
 
@@ -157,7 +159,7 @@ CoefficientForm &CoefficientForm::operator*=(const CoefficientForm &polynomial) 
     return *this;
 }
 
-CoefficientForm &CoefficientForm::operator+=(const bls12_381::scalar::Scalar &value) {
+CoefficientForm &CoefficientForm::operator+=(const Scalar &value) {
     if (this->is_zero()) {
         *this = CoefficientForm{{value}};
         return *this;
@@ -170,17 +172,17 @@ CoefficientForm &CoefficientForm::operator+=(const bls12_381::scalar::Scalar &va
     return *this;
 }
 
-CoefficientForm &CoefficientForm::operator-=(const bls12_381::scalar::Scalar &value) {
+CoefficientForm &CoefficientForm::operator-=(const Scalar &value) {
     *this += (-value);
     return *this;
 }
 
-CoefficientForm &CoefficientForm::operator*=(const bls12_381::scalar::Scalar &value) {
+CoefficientForm &CoefficientForm::operator*=(const Scalar &value) {
     if (this->is_zero() || value.is_zero()) {
         *this = CoefficientForm::zero();
         return *this;
     }
-    std::vector<bls12_381::scalar::Scalar> scaled_coeffs;
+    std::vector<Scalar> scaled_coeffs;
     scaled_coeffs.reserve(this->coefficients.size());
     for (const auto &coefficient: this->coefficients)
         scaled_coeffs.push_back(coefficient * value);
