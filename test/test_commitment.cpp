@@ -3,6 +3,8 @@
 #include <tuple>
 #include <vector>
 
+#include "impl/os_rng.h"
+
 #include "polynomial/coefficient.h"
 #include "process/commit.h"
 #include "process/evaluate.h"
@@ -12,6 +14,8 @@
 #include "structure/reference_string.h"
 
 using bls12_381::scalar::Scalar;
+using rng::impl::OsRng;
+
 using kzg::challenge::TranscriptProtocol;
 using kzg::structure::Commitment;
 using kzg::structure::CommitKey;
@@ -32,13 +36,14 @@ std::tuple<CommitKey, OpeningKey> setup_test(size_t degree) {
     return srs.trim(degree);
 }
 
-TEST(TestCommitment, CommitSingle) {
+TEST(Commitment, CommitSingle) {
     // 1. setup
     const size_t degree = 25;
     const auto [commit_key, opening_key] = setup_test(degree);
 
     // 2. commit
-    const auto polynomial = CoefficientForm::random(degree);
+    OsRng osRng;
+    const auto polynomial = CoefficientForm::random(degree, osRng);
     const auto commitment = commit(commit_key, polynomial);
 
     // 3. evaluate
@@ -50,15 +55,16 @@ TEST(TestCommitment, CommitSingle) {
     EXPECT_TRUE(verify);
 }
 
-TEST(TestCommitment, CommitMultiple) {
+TEST(Commitment, CommitMultiple) {
     // 1. setup
     const size_t degree = 27;
     const auto [commit_key, opening_key] = setup_test(degree);
 
     // 2. commit
-    const auto poly_1 = CoefficientForm::random(25);
-    const auto poly_2 = CoefficientForm::random(27);
-    const auto poly_3 = CoefficientForm::random(27);
+    OsRng osRng;
+    const auto poly_1 = CoefficientForm::random(25, osRng);
+    const auto poly_2 = CoefficientForm::random(27, osRng);
+    const auto poly_3 = CoefficientForm::random(27, osRng);
     const auto comm_1 = commit(commit_key, poly_1);
     const auto comm_2 = commit(commit_key, poly_2);
     const auto comm_3 = commit(commit_key, poly_3);
@@ -80,14 +86,15 @@ TEST(TestCommitment, CommitMultiple) {
     EXPECT_TRUE(verify);
 }
 
-TEST(TestCommitment, CommitTwoPoints) {
+TEST(Commitment, CommitTwoPoints) {
     // 1. setup
     const size_t degree = 25;
     const auto [commit_key, opening_key] = setup_test(degree);
 
     // 2. commit
-    const auto poly_1 = CoefficientForm::random(degree);
-    const auto poly_2 = CoefficientForm::random(degree);
+    OsRng osRng;
+    const auto poly_1 = CoefficientForm::random(degree, osRng);
+    const auto poly_2 = CoefficientForm::random(degree, osRng);
     const auto comm_1 = commit(commit_key, poly_1);
     const auto comm_2 = commit(commit_key, poly_2);
     const std::vector<Commitment> commitments = {comm_1, comm_2};
@@ -116,16 +123,17 @@ TEST(TestCommitment, CommitTwoPoints) {
     EXPECT_TRUE(verify_batch);
 }
 
-TEST(TestCommitment, CommitMultiplePointsWithAggregation) {
+TEST(Commitment, CommitMultiplePointsWithAggregation) {
     // 1. setup
     const size_t degree = 28;
     const auto [commit_key, opening_key] = setup_test(degree);
 
     // 2. commit
-    const auto poly_1 = CoefficientForm::random(degree);
-    const auto poly_2 = CoefficientForm::random(degree);
-    const auto poly_3 = CoefficientForm::random(degree);
-    const auto poly_4 = CoefficientForm::random(degree);
+    OsRng osRng;
+    const auto poly_1 = CoefficientForm::random(degree, osRng);
+    const auto poly_2 = CoefficientForm::random(degree, osRng);
+    const auto poly_3 = CoefficientForm::random(degree, osRng);
+    const auto poly_4 = CoefficientForm::random(degree, osRng);
     const auto comm_1 = commit(commit_key, poly_1);
     const auto comm_2 = commit(commit_key, poly_2);
     const auto comm_3 = commit(commit_key, poly_3);

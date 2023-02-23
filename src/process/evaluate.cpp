@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "process/commit.h"
-#include "util/field.h"
+#include "utils/field.h"
 
 namespace kzg::process::evaluate {
 

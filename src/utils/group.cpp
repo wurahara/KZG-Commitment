@@ -1,9 +1,9 @@
-#include "util/group.h"
+#include "utils/group.h"
 
 #include "group/g1_affine.h"
 #include "group/g2_affine.h"
 
-#include "util/field.h"
+#include "utils/field.h"
 
 namespace kzg::util::group {
 
@@ -22,8 +22,7 @@ G2Projective generate_random_g2_point() {
     return G2Affine::generator() * generate_random_scalar();
 }
 
-std::vector<G1Projective>
-slow_multi_scalar_mul_single_base(const std::vector<Scalar> &scalars, const G1Projective &base) {
+std::vector<G1Projective> slow_multi_scalar_mul_single_base(const std::vector<Scalar> &scalars, const G1Projective &base) {
     std::vector<G1Projective> res;
     res.reserve(scalars.size());
 

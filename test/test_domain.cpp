@@ -8,7 +8,7 @@
 using bls12_381::scalar::Scalar;
 using kzg::domain::EvaluationDomain;
 
-TEST(TestDomain, Fourier) {
+TEST(Domain, Fourier) {
     EvaluationDomain domain{4};
     std::vector<Scalar> coefficients = {Scalar{2}, Scalar{5}, Scalar{7}, Scalar{8}};
     auto evaluations = domain.fast_fourier(coefficients);
@@ -20,7 +20,7 @@ TEST(TestDomain, Fourier) {
     EXPECT_EQ(Scalar{8}, rep_coeffs[3]);
 }
 
-TEST(TestDomain, ElementSize) {
+TEST(Domain, ElementSize) {
     for (int i = 1; i < 10; ++i) {
         uint64_t size = 1 << i;
         EvaluationDomain domain{size};
@@ -29,7 +29,7 @@ TEST(TestDomain, ElementSize) {
     }
 }
 
-TEST(TestDomain, ElementContents) {
+TEST(Domain, ElementContents) {
     for (int i = 1; i < 10; ++i) {
         uint64_t size = 1 << i;
         EvaluationDomain domain{size};

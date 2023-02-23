@@ -44,8 +44,8 @@ public:
     void coset_fast_fourier_in_place(std::vector<bls12_381::scalar::Scalar> &coefficients) const;
     void coset_inverse_fast_fourier_in_place(std::vector<bls12_381::scalar::Scalar> &evaluations) const;
 
-    [[nodiscard]] polynomial::EvaluationForm evaluate_vanishing_polynomial_over_coset(uint64_t poly_degree) const;
     [[nodiscard]] bls12_381::scalar::Scalar evaluate_vanishing_polynomial(const bls12_381::scalar::Scalar &tau) const;
+    [[nodiscard]] polynomial::EvaluationForm evaluate_vanishing_polynomial_over_coset(uint64_t poly_degree) const;
     [[nodiscard]] std::vector<bls12_381::scalar::Scalar> evaluate_all_lagrange_coefficients(const bls12_381::scalar::Scalar &tau) const;
 
 public:

@@ -18,9 +18,7 @@ private:
 
 public:
     ReferenceString(CommitKey commit_key, OpeningKey opening_key);
-
     static ReferenceString setup(size_t max_degree);
-
     std::tuple<CommitKey, OpeningKey> trim(size_t truncated_degree);
 };
 

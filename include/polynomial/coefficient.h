@@ -3,6 +3,7 @@
 
 #include <vector>
 
+#include "core/rng.h"
 #include "scalar/scalar.h"
 
 namespace kzg::polynomial {
@@ -20,7 +21,7 @@ public:
     explicit CoefficientForm(std::vector<bls12_381::scalar::Scalar> &&coefficients);
 
     static CoefficientForm zero();
-    static CoefficientForm random(size_t degree);
+    static CoefficientForm random(size_t degree, rng::core::RngCore &rng);
 
     void trim_leading_zeros();
 

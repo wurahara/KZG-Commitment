@@ -6,8 +6,8 @@
 #include "group/g1_projective.h"
 #include "group/g2_affine.h"
 
-#include "util/field.h"
-#include "util/group.h"
+#include "utils/field.h"
+#include "utils/group.h"
 
 namespace kzg::structure {
 

@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <vector>
 
-TEST(TestUtil, ZipSkip) {
+TEST(Util, ZipSkip) {
     std::vector<uint64_t> a = {1, 2, 3, 4, 5, 6, 7, 8};
     std::vector<uint64_t> b = {1, 3, 5, 6};
 

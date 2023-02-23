@@ -8,7 +8,7 @@
 
 #include "domain/iterator.h"
 #include "polynomial/evaluation.h"
-#include "util/field.h"
+#include "utils/field.h"
 
 namespace kzg::domain {
 

@@ -1,18 +1,18 @@
-#include "util/field.h"
+#include "utils/field.h"
 
 #include <array>
 
-#include "util/random.h"
+#include "impl/os_rng.h"
 
 namespace kzg::util::field {
 
 using bls12_381::scalar::Scalar;
-using random::get_random;
+using rng::impl::OsRng;
 
 Scalar generate_random_scalar() {
     std::array<uint8_t, Scalar::BYTE_SIZE * 2> bytes{};
-    for (uint8_t &byte: bytes)
-        byte = get_random<uint8_t>();
+    OsRng osRng;
+    osRng.fill_bytes(bytes);
     return Scalar::from_bytes_wide(bytes);
 }
 

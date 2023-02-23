@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-#include "util/field.h"
+#include "utils/field.h"
 
 #include "domain/domain.h"
 #include "polynomial/evaluation.h"
@@ -10,6 +10,8 @@
 namespace kzg::polynomial {
 
 using bls12_381::scalar::Scalar;
+using rng::core::RngCore;
+
 using domain::EvaluationDomain;
 using util::field::generate_vec_powers;
 
@@ -33,12 +35,11 @@ CoefficientForm CoefficientForm::zero() {
     return CoefficientForm{{}};
 }
 
-CoefficientForm CoefficientForm::random(size_t degree) {
+CoefficientForm CoefficientForm::random(size_t degree, RngCore &rng) {
     std::vector<Scalar> rand_coeffs;
     rand_coeffs.reserve(degree + 1);
-    for (int i = 0; i <= degree; ++i) {
-        rand_coeffs.push_back(Scalar::random());
-    }
+    for (int i = 0; i <= degree; ++i)
+        rand_coeffs.push_back(Scalar::random(rng));
     return CoefficientForm{rand_coeffs};
 }
 

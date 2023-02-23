@@ -9,7 +9,7 @@
 #include "group/gt.h"
 #include "pairing/pairing.h"
 
-#include "util/field.h"
+#include "utils/field.h"
 
 namespace kzg::process::verify {
 
