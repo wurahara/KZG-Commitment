@@ -12,9 +12,9 @@
 
 namespace kzg::challenge {
 
-class TranscriptProtocol : public transcript::builder::Transcript {
+class BaseTranscript : public transcript::builder::Transcript {
 public:
-    explicit TranscriptProtocol(const std::string_view &label);
+    explicit BaseTranscript(const std::string_view &label);
 
     void append_commitment(const std::string_view &label, const structure::Commitment &commitment);
     void append_scalar(const std::string_view &label, const bls12_381::scalar::Scalar &scalar);

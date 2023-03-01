@@ -9,7 +9,7 @@
 namespace kzg::process::evaluate {
 
 using bls12_381::scalar::Scalar;
-using challenge::TranscriptProtocol;
+using challenge::BaseTranscript;
 using polynomial::CoefficientForm;
 using structure::CommitKey;
 using structure::Proof;
@@ -25,7 +25,7 @@ Proof create_witness_single(const CommitKey &commit_key, const CoefficientForm &
 
 AggregatedProof
 create_witness_multiple_polynomials(const CommitKey &commit_key, const std::vector<CoefficientForm> &polynomials,
-                                    const Scalar &point, TranscriptProtocol &transcript) {
+                                    const Scalar &point, BaseTranscript &transcript) {
     const auto challenge_gamma = transcript.challenge_scalar("challenge_gamma");
     const auto gamma_powers = util::field::generate_vec_powers(challenge_gamma, polynomials.size() - 1);
 

@@ -16,7 +16,7 @@
 using bls12_381::scalar::Scalar;
 using rng::impl::OsRng;
 
-using kzg::challenge::TranscriptProtocol;
+using kzg::challenge::BaseTranscript;
 using kzg::structure::Commitment;
 using kzg::structure::CommitKey;
 using kzg::structure::OpeningKey;
@@ -73,13 +73,13 @@ TEST(Commitment, CommitMultiple) {
 
     // 3. evaluate
     const auto point = Scalar{10};
-    auto prover_transcript = TranscriptProtocol{"agg_flatten"};
+    auto prover_transcript = BaseTranscript{"agg_flatten"};
     const auto aggregated_proof = create_witness_multiple_polynomials(
             commit_key, polynomials, point, prover_transcript
     );
 
     // 4. verify
-    auto verifier_transcript = TranscriptProtocol{"agg_flatten"};
+    auto verifier_transcript = BaseTranscript{"agg_flatten"};
     const bool verify = verify_multiple_polynomials(
             opening_key, commitments, aggregated_proof, verifier_transcript
     );
@@ -118,7 +118,7 @@ TEST(Commitment, CommitTwoPoints) {
     const std::vector<Commitment> witnesses = {proof_1.witness, proof_2.witness};
     const auto batch_proof = BatchProof{points, evaluations, witnesses};
 
-    auto transcript = TranscriptProtocol{"??"};
+    auto transcript = BaseTranscript{"??"};
     const bool verify_batch = verify_multiple_points(opening_key, commitments, batch_proof, transcript);
     EXPECT_TRUE(verify_batch);
 }
@@ -143,7 +143,7 @@ TEST(Commitment, CommitMultiplePointsWithAggregation) {
     // 3. evaluate
     const auto point_1 = Scalar{10};
     const auto point_2 = Scalar{11};
-    auto prover_transcript = TranscriptProtocol{"agg_batch"};
+    auto prover_transcript = BaseTranscript{"agg_batch"};
     const std::vector<CoefficientForm> polynomials = {poly_1, poly_2, poly_3};
     const auto aggregated_proof = create_witness_multiple_polynomials(
             commit_key, polynomials, point_1, prover_transcript
@@ -151,7 +151,7 @@ TEST(Commitment, CommitMultiplePointsWithAggregation) {
     const auto proof = create_witness_single(commit_key, poly_4, point_2);
 
     // 4. verify
-    auto verifier_transcript = TranscriptProtocol{"agg_batch"};
+    auto verifier_transcript = BaseTranscript{"agg_batch"};
     const auto [commitment_agg, evaluation_agg] =
             verify_aggregation(commitment_vec, aggregated_proof.evaluations, verifier_transcript);
     const std::vector<Commitment> commitments = {commitment_agg, comm_4};

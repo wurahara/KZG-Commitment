@@ -23,7 +23,7 @@ structure::AggregatedProof create_witness_multiple_polynomials(
         const structure::CommitKey &commit_key,
         const std::vector<polynomial::CoefficientForm> &polynomials,
         const bls12_381::scalar::Scalar &point,
-        challenge::TranscriptProtocol &transcript
+        challenge::BaseTranscript &transcript
 );
 
 } // namespace kzg::process

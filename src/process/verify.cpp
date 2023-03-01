@@ -20,7 +20,7 @@ using bls12_381::group::G2Prepared;
 using bls12_381::group::Gt;
 using bls12_381::pairing::multi_miller_loop;
 using bls12_381::scalar::Scalar;
-using challenge::TranscriptProtocol;
+using challenge::BaseTranscript;
 using structure::Commitment;
 using structure::OpeningKey;
 using structure::Proof;
@@ -42,7 +42,7 @@ bool verify_single_polynomial(const OpeningKey &opening_key, const Commitment &c
 
 bool verify_multiple_polynomials(const OpeningKey &opening_key,
                                  const std::vector<Commitment> &commitments,
-                                 const AggregatedProof &proof, TranscriptProtocol &transcript) {
+                                 const AggregatedProof &proof, BaseTranscript &transcript) {
     const auto [flattened_poly_commitments, flattened_poly_evaluations] =
             verify_aggregation(commitments, proof.evaluations, transcript);
     return verify_single_polynomial(opening_key, flattened_poly_commitments, Proof{
@@ -52,7 +52,7 @@ bool verify_multiple_polynomials(const OpeningKey &opening_key,
 
 bool verify_multiple_points(const OpeningKey &opening_key,
                             const std::vector<Commitment> &commitments,
-                            const BatchProof &proof, TranscriptProtocol &transcript) {
+                            const BatchProof &proof, BaseTranscript &transcript) {
     assert(commitments.size() == proof.points.size());
     assert(commitments.size() == proof.evaluations.size());
     assert(commitments.size() == proof.witnesses.size());
@@ -91,7 +91,7 @@ bool verify_multiple_points(const OpeningKey &opening_key,
 
 std::tuple<Commitment, Scalar> verify_aggregation(const std::vector<Commitment> &commitments,
                                                   const std::vector<Scalar> &evaluations,
-                                                  TranscriptProtocol &transcript) {
+                                                  BaseTranscript &transcript) {
     const auto challenge_gamma = transcript.challenge_scalar("challenge_gamma");
     const auto powers_gamma = generate_vec_powers(challenge_gamma, commitments.size() - 1);
 

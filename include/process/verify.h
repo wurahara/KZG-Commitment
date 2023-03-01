@@ -23,20 +23,20 @@ bool verify_multiple_polynomials(
         const structure::OpeningKey &opening_key,
         const std::vector<structure::Commitment> &commitments,
         const structure::AggregatedProof &proof,
-        challenge::TranscriptProtocol &transcript
+        challenge::BaseTranscript &transcript
 );
 
 bool verify_multiple_points(
         const structure::OpeningKey &opening_key,
         const std::vector<structure::Commitment> &commitments,
         const structure::BatchProof &proof,
-        challenge::TranscriptProtocol &transcript
+        challenge::BaseTranscript &transcript
 );
 
 std::tuple<structure::Commitment, bls12_381::scalar::Scalar> verify_aggregation(
         const std::vector<structure::Commitment> &commitments,
         const std::vector<bls12_381::scalar::Scalar> &evaluations,
-        challenge::TranscriptProtocol &transcript
+        challenge::BaseTranscript &transcript
 );
 
 } // namespace kzg::process::verify
