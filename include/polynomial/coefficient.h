@@ -25,12 +25,12 @@ public:
 
     void trim_leading_zeros();
 
-    [[nodiscard]] bool is_zero() const;
-    [[nodiscard]] size_t degree() const;
+    [[nodiscard]] auto is_zero() const -> bool;
+    [[nodiscard]] auto degree() const -> size_t;
 
-    [[nodiscard]] CoefficientForm ruffini(const bls12_381::scalar::Scalar &point) const;
-    [[nodiscard]] bls12_381::scalar::Scalar evaluate(const bls12_381::scalar::Scalar &point) const;
-    [[nodiscard]] std::vector<bls12_381::scalar::Scalar> get_coefficients() const;
+    [[nodiscard]] auto ruffini(const bls12_381::scalar::Scalar &point) const -> CoefficientForm;
+    [[nodiscard]] auto evaluate(const bls12_381::scalar::Scalar &point) const -> bls12_381::scalar::Scalar;
+    [[nodiscard]] auto get_coefficients() const -> std::vector<bls12_381::scalar::Scalar>;
 
 public:
     CoefficientForm &operator=(const CoefficientForm &rhs);

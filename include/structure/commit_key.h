@@ -17,9 +17,9 @@ public:
     CommitKey() = delete;
     explicit CommitKey(const std::vector<bls12_381::group::G1Affine> &vec);
 
-    [[nodiscard]] size_t max_degree() const;
-    [[nodiscard]] CommitKey truncate(size_t new_degree) const;
-    [[nodiscard]] std::vector<bls12_381::group::G1Affine> get_vec() const;
+    [[nodiscard]] auto max_degree() const -> size_t;
+    [[nodiscard]] auto truncate(size_t new_degree) const -> CommitKey;
+    [[nodiscard]] auto get_vec() const -> std::vector<bls12_381::group::G1Affine>;
 
     void check_polynomial_degree(const polynomial::CoefficientForm &polynomial) const;
 };

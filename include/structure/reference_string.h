@@ -16,10 +16,12 @@ private:
     CommitKey commit_key;
     OpeningKey opening_key;
 
-public:
+private:
     ReferenceString(CommitKey commit_key, OpeningKey opening_key);
-    static ReferenceString setup(size_t max_degree);
-    std::tuple<CommitKey, OpeningKey> trim(size_t truncated_degree);
+
+public:
+    static auto setup(size_t max_degree) -> ReferenceString;
+    auto trim(size_t truncated_degree) -> std::tuple<CommitKey, OpeningKey>;
 };
 
 } // namespace kzg::structure

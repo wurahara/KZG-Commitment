@@ -9,13 +9,13 @@
 namespace kzg::process::evaluate {
 
 using bls12_381::scalar::Scalar;
-using challenge::BaseTranscript;
 using polynomial::CoefficientForm;
 using structure::CommitKey;
 using structure::Proof;
 using structure::AggregatedProof;
 
-Proof create_witness_single(const CommitKey &commit_key, const CoefficientForm &polynomial, const Scalar &point) {
+auto create_witness_single(const CommitKey &commit_key, const CoefficientForm &polynomial, const Scalar &point)
+-> Proof {
     const auto evaluation = polynomial.evaluate(point);
     const auto diff = polynomial - evaluation;
     const auto quotient = diff.ruffini(point);
@@ -23,10 +23,12 @@ Proof create_witness_single(const CommitKey &commit_key, const CoefficientForm &
     return Proof{point, evaluation, witness};
 }
 
-AggregatedProof
-create_witness_multiple_polynomials(const CommitKey &commit_key, const std::vector<CoefficientForm> &polynomials,
-                                    const Scalar &point, BaseTranscript &transcript) {
-    const auto challenge_gamma = transcript.challenge_scalar("challenge_gamma");
+auto create_witness_multiple_polynomials(
+        const CommitKey &commit_key,
+        const std::vector<CoefficientForm> &polynomials,
+        const Scalar &point,
+        const Scalar &challenge_gamma
+) -> AggregatedProof {
     const auto gamma_powers = util::field::generate_vec_powers(challenge_gamma, polynomials.size() - 1);
 
     assert(gamma_powers.size() == polynomials.size());
@@ -45,6 +47,5 @@ create_witness_multiple_polynomials(const CommitKey &commit_key, const std::vect
 
     return AggregatedProof{point, evaluations, witness};
 }
-
 
 } // namespace kzg::process::evaluate

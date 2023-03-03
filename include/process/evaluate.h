@@ -5,7 +5,6 @@
 
 #include "scalar/scalar.h"
 
-#include "challenge/transcript.h"
 #include "polynomial/coefficient.h"
 #include "structure/commit_key.h"
 #include "structure/commitment.h"
@@ -13,18 +12,18 @@
 
 namespace kzg::process::evaluate {
 
-structure::Proof create_witness_single(
+auto create_witness_single(
         const structure::CommitKey &commit_key,
         const polynomial::CoefficientForm &polynomial,
         const bls12_381::scalar::Scalar &point
-);
+) -> structure::Proof;
 
-structure::AggregatedProof create_witness_multiple_polynomials(
+auto create_witness_multiple_polynomials(
         const structure::CommitKey &commit_key,
         const std::vector<polynomial::CoefficientForm> &polynomials,
         const bls12_381::scalar::Scalar &point,
-        challenge::BaseTranscript &transcript
-);
+        const bls12_381::scalar::Scalar &challenge_gamma
+) -> structure::AggregatedProof;
 
 } // namespace kzg::process
 

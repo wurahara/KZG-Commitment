@@ -6,38 +6,37 @@
 
 #include "scalar/scalar.h"
 
-#include "challenge/transcript.h"
 #include "structure/commitment.h"
 #include "structure/opening_key.h"
 #include "structure/proofs.h"
 
 namespace kzg::process::verify {
 
-bool verify_single_polynomial(
+auto verify_single_polynomial(
         const structure::OpeningKey &opening_key,
         const structure::Commitment &commitment,
         const structure::Proof &proof
-);
+) -> bool;
 
-bool verify_multiple_polynomials(
+auto verify_multiple_polynomials(
         const structure::OpeningKey &opening_key,
         const std::vector<structure::Commitment> &commitments,
         const structure::AggregatedProof &proof,
-        challenge::BaseTranscript &transcript
-);
+        const bls12_381::scalar::Scalar &challenge_gamma
+) -> bool;
 
-bool verify_multiple_points(
+auto verify_multiple_points(
         const structure::OpeningKey &opening_key,
         const std::vector<structure::Commitment> &commitments,
         const structure::BatchProof &proof,
-        challenge::BaseTranscript &transcript
-);
+        const bls12_381::scalar::Scalar &challenge_u
+) -> bool;
 
-std::tuple<structure::Commitment, bls12_381::scalar::Scalar> verify_aggregation(
+auto verify_aggregation(
         const std::vector<structure::Commitment> &commitments,
         const std::vector<bls12_381::scalar::Scalar> &evaluations,
-        challenge::BaseTranscript &transcript
-);
+        const bls12_381::scalar::Scalar &challenge_gamma
+) -> std::tuple<structure::Commitment, bls12_381::scalar::Scalar>;
 
 } // namespace kzg::process::verify
 

@@ -7,7 +7,8 @@
 
 namespace kzg::process::commit {
 
-structure::Commitment commit(const structure::CommitKey &commit_key, const polynomial::CoefficientForm &polynomial);
+auto commit(const structure::CommitKey &commit_key, const polynomial::CoefficientForm &polynomial)
+-> structure::Commitment;
 
 } // namespace kzg::process::commit
 

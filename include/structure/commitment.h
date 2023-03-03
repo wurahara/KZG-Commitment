@@ -18,7 +18,7 @@ public:
 
     static Commitment identity() noexcept;
 
-    [[nodiscard]] bls12_381::group::G1Affine get_content() const;
+    [[nodiscard]] auto get_content() const -> bls12_381::group::G1Affine;
 };
 
 }
