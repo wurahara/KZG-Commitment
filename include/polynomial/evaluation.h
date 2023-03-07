@@ -34,6 +34,9 @@ public:
     EvaluationForm &operator*=(const EvaluationForm &polynomial);
     EvaluationForm &operator/=(const EvaluationForm &polynomial);
 
+    bls12_381::scalar::Scalar &operator[](size_t index);
+    bls12_381::scalar::Scalar operator[](size_t index) const;
+
 public:
     friend inline EvaluationForm operator+(const EvaluationForm &a, const EvaluationForm &b) { return EvaluationForm(a) += b; }
     friend inline EvaluationForm operator-(const EvaluationForm &a, const EvaluationForm &b) { return EvaluationForm(a) -= b; }
