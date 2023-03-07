@@ -191,4 +191,8 @@ CoefficientForm &CoefficientForm::operator*=(const Scalar &value) {
     return *this;
 }
 
+bls12_381::scalar::Scalar &CoefficientForm::operator[](size_t index) {
+    return this->coefficients[index];
+}
+
 } // namespace kzg::polynomial
