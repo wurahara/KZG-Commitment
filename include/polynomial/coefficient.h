@@ -47,6 +47,7 @@ public:
     CoefficientForm &operator*=(const bls12_381::scalar::Scalar &value);
 
     bls12_381::scalar::Scalar &operator[](size_t index);
+    bls12_381::scalar::Scalar operator[](size_t index) const;
 
 public:
     friend inline CoefficientForm operator+(const CoefficientForm &a, const CoefficientForm &b) { return CoefficientForm(a) += b; }

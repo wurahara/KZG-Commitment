@@ -196,4 +196,9 @@ bls12_381::scalar::Scalar &CoefficientForm::operator[](size_t index) {
     return this->coefficients[index];
 }
 
+bls12_381::scalar::Scalar CoefficientForm::operator[](size_t index) const {
+    assert(index < this->coefficients.size());
+    return this->coefficients[index];
+}
+
 } // namespace kzg::polynomial
