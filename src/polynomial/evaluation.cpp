@@ -55,4 +55,14 @@ EvaluationForm &EvaluationForm::operator/=(const EvaluationForm &polynomial) {
     return *this;
 }
 
+bls12_381::scalar::Scalar &EvaluationForm::operator[](size_t index) {
+    assert(index < this->evaluations.size());
+    return this->evaluations[index];
+}
+
+bls12_381::scalar::Scalar EvaluationForm::operator[](size_t index) const {
+    assert(index < this->evaluations.size());
+    return this->evaluations[index];
+}
+
 } // namespace kzg::polynomial
