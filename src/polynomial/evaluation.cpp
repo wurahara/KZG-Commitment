@@ -65,4 +65,12 @@ bls12_381::scalar::Scalar EvaluationForm::operator[](size_t index) const {
     return this->evaluations[index];
 }
 
+const std::vector<bls12_381::scalar::Scalar> &EvaluationForm::get_evaluations() const {
+    return this->evaluations;
+}
+
+const EvaluationDomain &EvaluationForm::get_domain() const {
+    return this->domain;
+}
+
 } // namespace kzg::polynomial
