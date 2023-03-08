@@ -2,25 +2,31 @@
 
 #include <cassert>
 #include <cstdint>
-#include <stdexcept>
+#include <utility>
 
 #include "scalar/constant.h"
 
 #include "domain/iterator.h"
 #include "polynomial/evaluation.h"
 #include "utils/field.h"
+#include "utils/bit.h"
 
 namespace kzg::domain {
 
+using rng::util::bit::to_le_bytes;
+using rng::util::bit::from_le_bytes;
 using bls12_381::scalar::Scalar;
 
 const uint64_t TWO_ADACITY = 32;
 
-EvaluationDomain::EvaluationDomain() : domain_size{}, group_gen{Scalar::zero()} {}
+EvaluationDomain::EvaluationDomain() : group_gen{Scalar::zero()}, domain_size{} {}
 
 EvaluationDomain::EvaluationDomain(const EvaluationDomain &domain) = default;
 
 EvaluationDomain::EvaluationDomain(EvaluationDomain &&domain) noexcept = default;
+
+EvaluationDomain::EvaluationDomain(Scalar generator, uint64_t size)
+        : group_gen{std::move(generator)}, domain_size{size} {}
 
 constexpr uint64_t next_power_of_two(uint64_t x) noexcept {
     return x == 1 ? 1 : 1 << (64 - __builtin_clzl(x - 1));
@@ -168,6 +174,27 @@ EvaluationDomain::evaluate_all_lagrange_coefficients(const Scalar &tau) const {
 
 ElementIterator EvaluationDomain::iter() const {
     return ElementIterator{*this, 0, Scalar::one()};
+}
+
+std::optional<EvaluationDomain>
+EvaluationDomain::from_bytes(const std::array<uint8_t, EvaluationDomain::BYTE_SIZE> &bytes) {
+    std::array<uint8_t, 8> size_bytes{};
+    std::array<uint8_t, 32> gen_bytes{};
+    std::copy(bytes.begin(), bytes.begin() + 8, size_bytes.begin());
+    std::copy(bytes.begin() + 8, bytes.end(), gen_bytes.begin());
+    const auto size = from_le_bytes<uint64_t>(size_bytes);
+    const auto gen_opt = Scalar::from_bytes(gen_bytes);
+    if (!gen_opt.has_value()) return std::nullopt;
+    return EvaluationDomain{gen_opt.value(), size};
+}
+
+std::array<uint8_t, EvaluationDomain::BYTE_SIZE> EvaluationDomain::to_bytes() const {
+    const std::array<uint8_t, 8> size_bytes = to_le_bytes<uint64_t>(this->domain_size);
+    const std::array<uint8_t, 32> gen_bytes = this->group_gen.to_bytes();
+    std::array<uint8_t, 40> bytes{};
+    std::copy(size_bytes.begin(), size_bytes.end(), bytes.begin());
+    std::copy(gen_bytes.begin(), gen_bytes.end(), bytes.begin() + 8);
+    return bytes;
 }
 
 EvaluationDomain &EvaluationDomain::operator=(const EvaluationDomain &rhs) = default;

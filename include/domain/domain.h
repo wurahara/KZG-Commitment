@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <vector>
+#include <optional>
 
 #include "scalar/scalar.h"
 
@@ -14,6 +15,9 @@ namespace kzg::domain { class ElementIterator; }
 namespace kzg::domain {
 
 class EvaluationDomain {
+public:
+    static constexpr int32_t BYTE_SIZE = bls12_381::scalar::Scalar::BYTE_SIZE + sizeof(uint64_t);
+
 private:
     bls12_381::scalar::Scalar group_gen;
     uint64_t domain_size;
@@ -23,6 +27,7 @@ public:
     EvaluationDomain(const EvaluationDomain &domain);
     EvaluationDomain(EvaluationDomain &&domain) noexcept;
     explicit EvaluationDomain(uint64_t num_of_coefficients);
+    EvaluationDomain(bls12_381::scalar::Scalar generator, uint64_t size);
 
     [[nodiscard]] auto size() const noexcept -> size_t;
     [[nodiscard]] auto log_size() const noexcept -> size_t;
@@ -47,6 +52,9 @@ public:
     [[nodiscard]] auto evaluate_vanishing_polynomial(const bls12_381::scalar::Scalar &tau) const -> bls12_381::scalar::Scalar;
     [[nodiscard]] auto evaluate_vanishing_polynomial_over_coset(uint64_t poly_degree) const -> polynomial::EvaluationForm;
     [[nodiscard]] auto evaluate_all_lagrange_coefficients(const bls12_381::scalar::Scalar &tau) const -> std::vector<bls12_381::scalar::Scalar>;
+
+    static std::optional<EvaluationDomain> from_bytes(const std::array<uint8_t, EvaluationDomain::BYTE_SIZE> &bytes);
+    [[nodiscard]] std::array<uint8_t, EvaluationDomain::BYTE_SIZE> to_bytes() const;
 
 public:
     EvaluationDomain &operator=(const EvaluationDomain &rhs);
