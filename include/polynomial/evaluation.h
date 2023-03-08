@@ -37,6 +37,9 @@ public:
     bls12_381::scalar::Scalar &operator[](size_t index);
     bls12_381::scalar::Scalar operator[](size_t index) const;
 
+    [[nodiscard]] const std::vector<bls12_381::scalar::Scalar> &get_evaluations() const;
+    [[nodiscard]] const domain::EvaluationDomain &get_domain() const;
+
 public:
     friend inline EvaluationForm operator+(const EvaluationForm &a, const EvaluationForm &b) { return EvaluationForm(a) += b; }
     friend inline EvaluationForm operator-(const EvaluationForm &a, const EvaluationForm &b) { return EvaluationForm(a) -= b; }
