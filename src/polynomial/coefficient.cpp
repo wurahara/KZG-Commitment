@@ -201,4 +201,30 @@ bls12_381::scalar::Scalar CoefficientForm::operator[](size_t index) const {
     return this->coefficients[index];
 }
 
+std::optional<CoefficientForm> CoefficientForm::from_slice(const std::vector<uint8_t> &bytes) {
+    const size_t coeff_count = bytes.size() / Scalar::BYTE_SIZE;
+    std::vector<Scalar> coeffs;
+    coeffs.reserve(coeff_count);
+
+    for (int i = 0; i < bytes.size(); i += Scalar::BYTE_SIZE) {
+        std::array<uint8_t, Scalar::BYTE_SIZE> coeff_byte{};
+        std::copy(bytes.begin() + i, bytes.begin() + i + Scalar::BYTE_SIZE, coeff_byte.begin());
+        const auto scalar_opt = Scalar::from_bytes(coeff_byte);
+        if (!scalar_opt.has_value()) return std::nullopt;
+        coeffs.push_back(scalar_opt.value());
+    }
+
+    return CoefficientForm{coeffs};
+}
+
+std::vector<uint8_t> CoefficientForm::to_var_bytes() const {
+    std::vector<uint8_t> res{};
+    res.reserve(this->coefficients.size() * Scalar::BYTE_SIZE);
+    for (const Scalar &coeff: this->coefficients) {
+        const std::array<uint8_t, Scalar::BYTE_SIZE> coeff_bytes = coeff.to_bytes();
+        res.insert(res.end(), coeff_bytes.begin(), coeff_bytes.end());
+    }
+    return res;
+}
+
 } // namespace kzg::polynomial

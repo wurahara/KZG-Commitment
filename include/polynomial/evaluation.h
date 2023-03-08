@@ -40,6 +40,9 @@ public:
     [[nodiscard]] const std::vector<bls12_381::scalar::Scalar> &get_evaluations() const;
     [[nodiscard]] const domain::EvaluationDomain &get_domain() const;
 
+    static std::optional<EvaluationForm> from_slice(const std::vector<uint8_t> &bytes);
+    [[nodiscard]] std::vector<uint8_t> to_var_bytes() const;
+
 public:
     friend inline EvaluationForm operator+(const EvaluationForm &a, const EvaluationForm &b) { return EvaluationForm(a) += b; }
     friend inline EvaluationForm operator-(const EvaluationForm &a, const EvaluationForm &b) { return EvaluationForm(a) -= b; }

@@ -49,6 +49,9 @@ public:
     bls12_381::scalar::Scalar &operator[](size_t index);
     bls12_381::scalar::Scalar operator[](size_t index) const;
 
+    static std::optional<CoefficientForm> from_slice(const std::vector<uint8_t> &bytes);
+    [[nodiscard]] std::vector<uint8_t> to_var_bytes() const;
+
 public:
     friend inline CoefficientForm operator+(const CoefficientForm &a, const CoefficientForm &b) { return CoefficientForm(a) += b; }
     friend inline CoefficientForm operator-(const CoefficientForm &a, const CoefficientForm &b) { return CoefficientForm(a) -= b; }
