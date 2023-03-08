@@ -21,4 +21,14 @@ G1Affine Commitment::get_content() const {
     return this->content;
 }
 
+auto Commitment::to_bytes() const -> std::array<uint8_t, BYTE_SIZE> {
+    return this->content.to_compressed();
+}
+
+auto Commitment::from_bytes(const std::array<uint8_t, BYTE_SIZE> &bytes) -> std::optional<Commitment> {
+    const auto g1_opt = G1Affine::from_compressed(bytes);
+    if (!g1_opt.has_value()) return std::nullopt;
+    return Commitment{g1_opt.value()};
+}
+
 } // namespace kzg::structure
