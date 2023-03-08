@@ -7,6 +7,9 @@
 namespace kzg::structure {
 
 class Commitment {
+public:
+    static constexpr int32_t BYTE_SIZE = bls12_381::group::G1Affine::BYTE_SIZE;
+
 private:
     bls12_381::group::G1Affine content;
 
@@ -17,8 +20,10 @@ public:
     explicit Commitment(const bls12_381::group::G1Projective &element);
 
     static Commitment identity() noexcept;
-
     [[nodiscard]] auto get_content() const -> bls12_381::group::G1Affine;
+
+    [[nodiscard]] auto to_bytes() const -> std::array<uint8_t, BYTE_SIZE>;
+    static auto from_bytes(const std::array<uint8_t, BYTE_SIZE> &bytes) -> std::optional<Commitment>;
 };
 
 }
