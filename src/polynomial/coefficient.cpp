@@ -63,6 +63,10 @@ size_t CoefficientForm::degree() const {
     return this->coefficients.size() - 1;
 }
 
+auto CoefficientForm::size() const -> size_t {
+    return this->coefficients.size();
+}
+
 Scalar CoefficientForm::evaluate(const Scalar &point) const {
     if (this->is_zero())
         return Scalar::zero();

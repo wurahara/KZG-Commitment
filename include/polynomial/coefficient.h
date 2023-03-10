@@ -27,6 +27,7 @@ public:
 
     [[nodiscard]] auto is_zero() const -> bool;
     [[nodiscard]] auto degree() const -> size_t;
+    [[nodiscard]] auto size() const -> size_t;
 
     [[nodiscard]] auto ruffini(const bls12_381::scalar::Scalar &point) const -> CoefficientForm;
     [[nodiscard]] auto evaluate(const bls12_381::scalar::Scalar &point) const -> bls12_381::scalar::Scalar;
