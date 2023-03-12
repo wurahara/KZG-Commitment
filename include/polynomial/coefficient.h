@@ -32,6 +32,9 @@ public:
     [[nodiscard]] auto evaluate(const bls12_381::scalar::Scalar &point) const -> bls12_381::scalar::Scalar;
     [[nodiscard]] auto get_coefficients() const -> std::vector<bls12_381::scalar::Scalar>;
 
+    static std::optional<CoefficientForm> from_slice(const std::vector<uint8_t> &bytes);
+    [[nodiscard]] std::vector<uint8_t> to_var_bytes() const;
+
 public:
     CoefficientForm &operator=(const CoefficientForm &rhs);
     CoefficientForm &operator=(CoefficientForm &&rhs) noexcept;
@@ -48,9 +51,6 @@ public:
 
     bls12_381::scalar::Scalar &operator[](size_t index);
     bls12_381::scalar::Scalar operator[](size_t index) const;
-
-    static std::optional<CoefficientForm> from_slice(const std::vector<uint8_t> &bytes);
-    [[nodiscard]] std::vector<uint8_t> to_var_bytes() const;
 
 public:
     friend inline CoefficientForm operator+(const CoefficientForm &a, const CoefficientForm &b) { return CoefficientForm(a) += b; }

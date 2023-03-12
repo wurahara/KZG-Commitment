@@ -160,3 +160,19 @@ TEST(Commitment, CommitMultiplePointsWithAggregation) {
     const bool verify = verify_multiple_points(opening_key, commitments, batch_proof, challenge_gamma);
     EXPECT_TRUE(verify);
 }
+
+TEST(Commitment, CommitKeyByteUnchecked) {
+    const auto [commit_key, _] = setup_test(7);
+    const auto bytes = commit_key.to_raw_var_bytes();
+    const auto ck_p = CommitKey::from_slice_unchecked(bytes);
+    const auto ck_pp = ck_p.to_raw_var_bytes();
+    EXPECT_EQ(bytes, ck_pp);
+}
+
+TEST(Commitment, CommitKeyByte) {
+    const auto [commit_key, _] = setup_test(7);
+    const auto bytes = commit_key.to_var_bytes();
+    const auto ck_p = CommitKey::from_slice(bytes);
+    const auto ck_pp = ck_p->to_var_bytes();
+    EXPECT_EQ(bytes, ck_pp);
+}

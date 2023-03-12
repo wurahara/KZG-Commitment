@@ -22,6 +22,12 @@ public:
     [[nodiscard]] auto get_vec() const -> std::vector<bls12_381::group::G1Affine>;
 
     void check_polynomial_degree(const polynomial::CoefficientForm &polynomial) const;
+
+    [[nodiscard]] std::vector<uint8_t> to_raw_var_bytes() const;
+    [[nodiscard]] std::vector<uint8_t> to_var_bytes() const;
+
+    static CommitKey from_slice_unchecked(const std::vector<uint8_t> &bytes);
+    static std::optional<CommitKey> from_slice(const std::vector<uint8_t> &bytes);
 };
 
 } // namespace kzg::structure
