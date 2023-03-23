@@ -31,7 +31,8 @@ using kzg::structure::BatchProof;
 using kzg::polynomial::CoefficientForm;
 
 std::tuple<CommitKey, OpeningKey> setup_test(size_t degree) {
-    auto srs = ReferenceString::setup(degree);
+    OsRng rng{};
+    auto srs = ReferenceString::setup(degree, rng);
     return srs.trim(degree);
 }
 
@@ -175,4 +176,12 @@ TEST(Commitment, CommitKeyByte) {
     const auto ck_p = CommitKey::from_slice(bytes);
     const auto ck_pp = ck_p->to_var_bytes();
     EXPECT_EQ(bytes, ck_pp);
+}
+
+TEST(Commitment, OpeningKeySerialization) {
+    const auto [_, opening_key] = setup_test(7);
+    const auto bytes = opening_key.to_bytes();
+    const auto ok_opt = OpeningKey::from_bytes(bytes);
+    const auto recovered_bytes = ok_opt->to_bytes();
+    EXPECT_EQ(bytes, recovered_bytes);
 }

@@ -6,11 +6,15 @@
 
 namespace kzg::structure {
 
+/**
+ * @brief Holds a commitment to a polynomial in coefficient form.
+ */
 class Commitment {
 public:
     static constexpr int32_t BYTE_SIZE = bls12_381::group::G1Affine::BYTE_SIZE;
 
 private:
+    /// The commitment is a group element.
     bls12_381::group::G1Affine content;
 
 public:

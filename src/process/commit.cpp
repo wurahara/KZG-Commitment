@@ -12,7 +12,7 @@ structure::Commitment commit(const structure::CommitKey &commit_key, const Coeff
     commit_key.check_polynomial_degree(polynomial);
 
     const auto coefficients = polynomial.get_coefficients();
-    const auto vec = commit_key.get_vec();
+    const auto &vec = commit_key.get_powers_of_g();
 
     G1Projective res{};
     for (int i = 0; i < coefficients.size(); ++i)

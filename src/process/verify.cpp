@@ -1,7 +1,5 @@
 #include "process/verify.h"
 
-#include <cassert>
-
 #include "group/g1_affine.h"
 #include "group/g1_projective.h"
 #include "group/g2_affine.h"
@@ -9,6 +7,7 @@
 #include "group/gt.h"
 #include "pairing/pairing.h"
 
+#include "exception/exception.h"
 #include "utils/field.h"
 
 namespace kzg::process::verify {
@@ -20,6 +19,9 @@ using bls12_381::group::G2Prepared;
 using bls12_381::group::Gt;
 using bls12_381::pairing::multi_miller_loop;
 using bls12_381::scalar::Scalar;
+
+using exception::Exception;
+using exception::Type;
 using structure::Commitment;
 using structure::OpeningKey;
 using structure::Proof;
@@ -47,10 +49,10 @@ auto verify_multiple_polynomials(
         const OpeningKey &opening_key,
         const std::vector<Commitment> &commitments,
         const AggregatedProof &proof,
-        const Scalar &challenge_gamma
+        const Scalar &gamma_challenge
 ) -> bool {
     const auto [flattened_poly_commitments, flattened_poly_evaluations] =
-            verify_aggregation(commitments, proof.evaluations, challenge_gamma);
+            verify_aggregation(commitments, proof.evaluations, gamma_challenge);
     return verify_single_polynomial(opening_key, flattened_poly_commitments, Proof{
             proof.point, flattened_poly_evaluations, proof.witness
     });
@@ -60,16 +62,17 @@ auto verify_multiple_points(
         const OpeningKey &opening_key,
         const std::vector<Commitment> &commitments,
         const BatchProof &proof,
-        const Scalar &challenge_u
+        const Scalar &u_challenge
 ) -> bool {
-    assert(commitments.size() == proof.points.size());
-    assert(commitments.size() == proof.evaluations.size());
-    assert(commitments.size() == proof.witnesses.size());
+    if (commitments.size() != proof.points.size()
+        || commitments.size() != proof.evaluations.size()
+        || commitments.size() != proof.witnesses.size())
+        throw Exception(Type::SIZE_MISMATCH, "the number of commitments is different from the proof.");
 
     G1Projective total_c{};
     G1Projective total_w{};
 
-    const auto power_u = util::field::generate_vec_powers(challenge_u, commitments.size() - 1);
+    const auto power_u = util::field::generate_vec_powers(u_challenge, commitments.size() - 1);
 
     Scalar multiplier_g{};
     G1Projective c;
@@ -100,9 +103,9 @@ auto verify_multiple_points(
 auto verify_aggregation(
         const std::vector<Commitment> &commitments,
         const std::vector<Scalar> &evaluations,
-        const Scalar &challenge_gamma
+        const Scalar &gamma_challenge
 ) -> std::tuple<Commitment, Scalar> {
-    const auto powers_gamma = generate_vec_powers(challenge_gamma, commitments.size() - 1);
+    const auto powers_gamma = generate_vec_powers(gamma_challenge, commitments.size() - 1);
 
     G1Projective flattened_poly_commitments{};
     Scalar flattened_poly_evaluations{};

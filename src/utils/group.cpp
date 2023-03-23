@@ -12,14 +12,14 @@ using bls12_381::group::G1Projective;
 using bls12_381::group::G2Affine;
 using bls12_381::group::G2Projective;
 using bls12_381::scalar::Scalar;
-using field::generate_random_scalar;
+using field::random_scalar;
 
-G1Projective generate_random_g1_point() {
-    return G1Affine::generator() * generate_random_scalar();
+G1Projective random_g1_point(rng::core::RngCore &rng) {
+    return G1Affine::generator() * random_scalar(rng);
 }
 
-G2Projective generate_random_g2_point() {
-    return G2Affine::generator() * generate_random_scalar();
+G2Projective random_g2_point(rng::core::RngCore &rng) {
+    return G2Affine::generator() * random_scalar(rng);
 }
 
 std::vector<G1Projective> slow_multi_scalar_mul_single_base(const std::vector<Scalar> &scalars, const G1Projective &base) {

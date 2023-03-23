@@ -3,11 +3,18 @@
 
 #include <vector>
 
+#include "core/rng.h"
 #include "scalar/scalar.h"
 
 namespace kzg::util::field {
 
-bls12_381::scalar::Scalar generate_random_scalar();
+/**
+ * @brief Generates a random <tt>Scalar</tt> using an RNG seed.
+ * @param rng the random number generator
+ * @return a random <tt>Scalar</tt>
+ */
+auto random_scalar(rng::core::RngCore &rng) -> bls12_381::scalar::Scalar;
+
 std::vector<bls12_381::scalar::Scalar> generate_vec_powers(const bls12_381::scalar::Scalar &value, size_t max_degree);
 void batch_inversion(std::vector<bls12_381::scalar::Scalar> &scalars);
 

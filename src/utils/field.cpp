@@ -2,18 +2,12 @@
 
 #include <array>
 
-#include "impl/os_rng.h"
-
 namespace kzg::util::field {
 
 using bls12_381::scalar::Scalar;
-using rng::impl::OsRng;
 
-Scalar generate_random_scalar() {
-    std::array<uint8_t, Scalar::BYTE_SIZE * 2> bytes{};
-    OsRng osRng;
-    osRng.fill_bytes(bytes);
-    return Scalar::from_bytes_wide(bytes);
+auto random_scalar(rng::core::RngCore &rng) -> Scalar {
+    return Scalar::random(rng);
 }
 
 std::vector<Scalar> generate_vec_powers(const Scalar &value, size_t max_degree) {
