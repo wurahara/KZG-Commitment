@@ -6,6 +6,7 @@
 
 #include "scalar/constant.h"
 
+#include "exception/exception.h"
 #include "domain/iterator.h"
 #include "polynomial/evaluation.h"
 #include "utils/field.h"
@@ -16,6 +17,9 @@ namespace kzg::domain {
 using rng::util::bit::to_le_bytes;
 using rng::util::bit::from_le_bytes;
 using bls12_381::scalar::Scalar;
+
+using exception::Exception;
+using exception::Type;
 
 const uint64_t TWO_ADACITY = 32;
 
@@ -40,7 +44,8 @@ EvaluationDomain::EvaluationDomain(uint64_t num_of_coefficients) {
     const uint64_t size = next_power_of_two(num_of_coefficients);
     const uint64_t log_size = trailing_zeros(size);
 
-    assert(log_size <= TWO_ADACITY);
+    if (log_size >= TWO_ADACITY)
+        throw Exception(Type::INVALID_EVALUATION_DOMAIN_SIZE, "Evaluation domain size is too large.");
 
     Scalar group_generator = bls12_381::scalar::constant::ROOT_OF_UNITY;
     for (uint64_t i = log_size; i < TWO_ADACITY; ++i)

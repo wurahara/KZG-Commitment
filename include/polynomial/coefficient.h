@@ -8,8 +8,12 @@
 
 namespace kzg::polynomial {
 
+/**
+ * @brief Represents a polynomial in coefficient form.
+ */
 class CoefficientForm {
 private:
+    /// The coefficient of x ^ i is stored at index i.
     std::vector<bls12_381::scalar::Scalar> coefficients;
 
 public:
@@ -28,6 +32,11 @@ public:
     [[nodiscard]] auto is_zero() const -> bool;
     [[nodiscard]] auto degree() const -> size_t;
 
+    /**
+     * @brief Divides the polynomial by (X - point) using Ruffini's method.
+     * @param point the point to divide by.
+     * @return the quotient polynomial.
+     */
     [[nodiscard]] auto ruffini(const bls12_381::scalar::Scalar &point) const -> CoefficientForm;
     [[nodiscard]] auto evaluate(const bls12_381::scalar::Scalar &point) const -> bls12_381::scalar::Scalar;
     [[nodiscard]] auto get_coefficients() const -> std::vector<bls12_381::scalar::Scalar>;

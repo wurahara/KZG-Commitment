@@ -10,9 +10,14 @@
 
 namespace kzg::polynomial {
 
+/**
+ * @brief Represents a polynomial in evaluation form.
+ */
 class EvaluationForm {
 private:
+    /// The evaluations of the polynomial over a specific domain.
     std::vector<bls12_381::scalar::Scalar> evaluations;
+    /// The evaluation domain of the polynomial.
     domain::EvaluationDomain domain;
 
 public:
@@ -23,6 +28,10 @@ public:
     EvaluationForm(const std::vector<bls12_381::scalar::Scalar> &evaluations, const domain::EvaluationDomain &domain);
     EvaluationForm(std::vector<bls12_381::scalar::Scalar> &&evaluations, domain::EvaluationDomain &&domain);
 
+    /**
+     * @brief Interpolates the polynomial from its evaluations.
+     * @return the interpolated polynomial in coefficient form.
+     */
     [[nodiscard]] CoefficientForm interpolate() const;
 
 public:
